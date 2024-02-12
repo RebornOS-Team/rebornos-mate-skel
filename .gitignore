@@ -1,2 +1,13 @@
-*.pkg.*
-pkg/*
+# dconf compiled settings
+/src/rootfs/etc/skel/.config/dconf/user
+
+# Packaging
+/packaging/**/pkg
+/packaging/**/src
+/packaging/**/*.tar*
+/packaging/**/*.pack
+/packaging/rebornos-mate-skel-git/rebornos-mate-skel/*
+/packaging/rebornos-mate-skel/rebornos-mate-skel/*
+
+# VSCode
+/*.code-workspace

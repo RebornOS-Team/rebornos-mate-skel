@@ -1,0 +1,55 @@
+# Maintainers:
+# 1. shivanandvp <shivanandvp@rebornos.org, pvshvp.oss@gmail.com>
+
+pkgname=rebornos-mate-skel-git
+pkgver=1.1.1
+pkgrel=1
+
+arch=(any)
+pkgdesc='Skeleton for /home, used for configuring RebornOS MATE'
+url='https://github.com/RebornOS-Team/rebornos-mate-skel'
+license=('GPL3')
+depends=('adobe-source-code-pro-fonts')
+optdepends=()
+provides=('skel')
+conflicts=('rebornos-mate-skel' 'rebornos-mate-skel-local')
+makedepends=('git' 'dconf')
+
+source=("git+https://github.com/RebornOS-Team/rebornos-mate-skel")
+sha256sums=('SKIP')
+
+pkgver() {
+    (   cd "${srcdir}/rebornos-mate-skel" 
+        set -o pipefail
+        git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+        printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    )
+}
+
+build() {     
+    PROJECT_DIRECTORY="${srcdir}/rebornos-mate-skel"
+    SCRIPT_DIRECTORY="$PROJECT_DIRECTORY/scripts"
+    SOURCE_DIRECTORY="$PROJECT_DIRECTORY/src"
+    RESOURCE_DIRECTORY="$SOURCE_DIRECTORY/rootfs"
+    # BUILD_DIRECTORY="$PROJECT_DIRECTORY/build"
+    # NUMBER_OF_PROCESSORS="$(nproc)"
+    # NUMBER_OF_PROCESSORS="$(($NUMBER_OF_PROCESSORS-1))"  
+
+    sh "$SCRIPT_DIRECTORY/_update_local_dconf_database_user.sh"
+}
+
+package() {
+    PROJECT_DIRECTORY="${srcdir}/rebornos-mate-skel"
+    SCRIPT_DIRECTORY="$PROJECT_DIRECTORY/scripts"
+    SOURCE_DIRECTORY="$PROJECT_DIRECTORY/src"
+    RESOURCE_DIRECTORY="$SOURCE_DIRECTORY/rootfs"
+    # BUILD_DIRECTORY="$PROJECT_DIRECTORY/build"
+    # NUMBER_OF_PROCESSORS="$(nproc)"
+    # NUMBER_OF_PROCESSORS="$(($NUMBER_OF_PROCESSORS-1))"   
+
+    # To bypass makepkg's dependency check during build-time
+    depends+=('mint-themes' 'mint-y-icons' 'inter-font' 'adobe-source-code-pro-fonts')
+
+    install -D -m644 "${RESOURCE_DIRECTORY}/etc/skel/.config/dconf/user" "${pkgdir}/etc/skel/.config/dconf/user"
+    install -D -m644 "${RESOURCE_DIRECTORY}/usr/share/backgrounds/mate/nature/blinds-alt.jpg" "${pkgdir}/usr/share/backgrounds/mate/nature/blinds-alt.jpg"
+}
